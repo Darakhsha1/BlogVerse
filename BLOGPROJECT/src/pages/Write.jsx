@@ -12,48 +12,41 @@ const Write=()=>{
    const [title,setTitle]=useState(state?.title||"");
    const [file,setFile]=useState(null);
    const [cat,setCat]=useState(state?.category||"");
-   const handleClick=async e=>{
-    e.preventDefault()
+   const [isLoading, setIsLoading] = useState(false);
+   const handleClick = async e => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
     const formData = new FormData();
-    
-  if(title) formData.append("title", title);
-  if(value) formData.append("descr", value);
-  if(cat) formData.append("cat", cat);
-  if(file) formData.append("image", file);
- try {
-    if (state) {
-        console.log("1. Updating post:", state.id);
 
-        const res = await axios.put(
-            `/api/posts/${state.id}`,
-            formData,
-            {
-                withCredentials: true
-            }
-        );
+    if (title) formData.append("title", title);
+    if (value) formData.append("descr", value);
+    if (cat) formData.append("cat", cat);
+    if (file) formData.append("image", file);
 
-        console.log("2. UPDATE SUCCESS:", res.data);
+    try {
+        if (state) {
+            const res = await axios.put(
+                `/api/posts/${state.id}`,
+                formData,
+                { withCredentials: true }
+            );
 
-        console.log("3. Going to:", `/post/${state.id}`);
+            navigate(`/post/${state.id}`);
+        } else {
+            await axios.post(
+                `/api/posts`,
+                formData,
+                { withCredentials: true }
+            );
 
-        navigate(`/post/${state.id}`);
-    } else {
-        console.log("Creating post");
-
-        await axios.post(
-            `/api/posts`,
-            formData,
-            {
-                withCredentials: true
-            }
-        );
-
-        navigate("/");
+            navigate("/");
+        }
+    } catch (err) {
+        console.log("ERROR:", err);
+        setIsLoading(false);
     }
-} catch (err) {
-    console.log("ERROR:", err);
-}
-
 };
     return (
        <div className="add">
@@ -80,13 +73,15 @@ const Write=()=>{
                 <label className="file" htmlFor="file">Upload</label>
                 <div className="buttons">
                     <button >Save as draft</button>
-                        <button onClick={handleClick}>Publish</button>
+                       <button onClick={handleClick} disabled={isLoading}>
+    {isLoading ? "Publishing..." : "Publish"}
+</button>
                 </div>
             </div>
             <div className="item">
                 <h1>Category</h1>
                 <div className="cat">
-                <input type="radio" checked={cat==="Art"} name="cat" value="art" id="art" onChange={e=>setCat(e.target.value)} />
+                <input type="radio" checked={cat==="Art"} name="cat" value="Art" id="Art" onChange={e=>setCat(e.target.value)} />
                 <label htmlFor="art">Art</label>
                 </div>
                 <div className="cat">

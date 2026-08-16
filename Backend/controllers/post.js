@@ -43,24 +43,25 @@ export const getPost = (req, res) => {
 export const addPost = (req, res) => {
     const token = req.cookies.access_token;
   
-
+console.log(20);
     if (!token) {
+        console.log(21);
         return res.status(401).json("Not authenticated");
     }
 
     jwt.verify(token, "jwtkey", async (err, userInfo) => {
-
+    console.log(22);
         if (err) return res.status(403).json("Token invalid");
 
         try {
+            console.log(23);
            let imageUrl = "";
 
 if (req.file) {
-   
+    console.log(24);
     const image = await uploadOnCloudinary(req.file.path);
-   
-
     if (!image) {
+        console.log("File path:", req.file.path);
         return res.status(500).json("Image upload failed");
     }
 
@@ -76,20 +77,22 @@ if (req.file) {
                 q,
                 [
                     req.body.title,
-                    req.body.desc,
+                    req.body.descr,
                     imageUrl,
                     req.body.cat,
-                    req.body.date,
+                    new Date(),
                     userInfo.id,
                 ],
                 (err, data) => {
+                    console.log(29);
                     if (err) return res.status(500).json(err);
-
+                     console.log(206);
                     return res.status(200).json("Post created");
                 }
             );
 
         } catch (err) {
+            console.log(27);
             console.log(err);
             return res.status(500).json(err);
         }

@@ -50,7 +50,7 @@ console.log("CURRENT USERNAME:", curruser?.currentUser?.username);
                {post.userImg&& <img src={post.userImg}/>}
                 <div className="info">
                     <span>{post.username}</span>
-                    <p>Posted {moment(post.datee).fromNow()}</p>
+                   <p>Posted {new Date(post.datee).toDateString()}</p>
                 </div>
                 {post?.id && curruser?.currentUser?.username===post?.username&&(<div className="change">
                     <Link to={`/write?edit=${postId}`} state={post} >
@@ -60,7 +60,10 @@ console.log("CURRENT USERNAME:", curruser?.currentUser?.username);
     )}
             </div>
             <h1>{post.title}</h1>
-            <p>{post.descr}</p>
+        <div
+  className="postContent"
+  dangerouslySetInnerHTML={{ __html: post.descr }}
+/>
        <Menu cat={post.category}/>
        </div>
        </div>

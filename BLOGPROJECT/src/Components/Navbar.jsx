@@ -1,38 +1,69 @@
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/authContext.jsx";
 import logo from "../assets/logo.png";
-import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
 
 function Navbar() {
-   const {currentUser,logout}=useContext(AuthContext)
+  const { currentUser, logout } = useContext(AuthContext);
+
+  const categories = [
+    ["ART", "art"],
+    ["SCIENCE", "science"],
+    ["TECHNOLOGY", "technology"],
+    ["CINEMA", "cinema"],
+    ["DESIGN", "design"],
+    ["FOOD", "food"],
+  ];
+
   return (
     <div className="nnavbar">
       <div className="ccontainer">
+
         <div className="logo">
           <Link to="/">
-          <img src={logo} alt=""/>
+            <img src={logo} alt="Lama Blog" />
           </Link>
-          
         </div>
+
         <div className="links">
-          <Link className="link" to="/?cat=art">
-          <h6>ART</h6></Link>
-          <Link className="link" to="/?cat=science">
-          <h6>SCIENCE</h6></Link>
-          <Link className="link" to="/?cat=technology">
-          <h6>TECHNOLOGY</h6></Link>
-          <Link className="link" to="/?cat=cinema">
-          <h6>CINEMA</h6></Link>
-          <Link className="link" to="/?cat=design">
-          <h6>DESIGN</h6></Link>
-           <Link className="link" to="/?cat=food">
-          <h6>FOOD</h6></Link>
-          <span>{currentUser?.username}</span>
-          {currentUser? 
-          < span onClick={logout}>Logout</span>: <Link className="link" to="/login">Login</Link>}
-          <span className="write">
-            <Link className="link"to="/write">Write</Link>
-          </span>
+
+          <div className="categories">
+            {categories.map(([name, value]) => (
+              <Link
+                key={value}
+                className="navCategory"
+                to={`/?cat=${value}`}
+              >
+                {name}
+              </Link>
+            ))}
+          </div>
+
+          {currentUser ? (
+            <>
+              <div className="userPill">
+                <div className="avatar">
+                  {currentUser.username?.charAt(0).toUpperCase()}
+                </div>
+
+                <span>{currentUser.username}</span>
+                <span className="arrow">⌄</span>
+              </div>
+
+              <button className="logoutBtn" onClick={logout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link className="loginBtn" to="/login">
+              Login
+            </Link>
+          )}
+
+          <Link className="writeBtn" to="/write">
+            Write
+          </Link>
+
         </div>
       </div>
     </div>
